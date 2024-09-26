@@ -32,31 +32,55 @@ const prev = document.querySelector('.container .right-section .music-player .pl
 const next = document.querySelector('.container .right-section .music-player .player-actions .buttons .next');
 const audioPlayer = document.createElement('audio');
 document.body.appendChild(audioPlayer);
-let flag = "not_playing"; //used to track if music is playing in background
+let flag = 0; //used to track if music is playing in background
 let first = 0;
+let monitor = null; //monitors query selector play in playBtn
 // const songsData = [
 //   {
 //     image:
 //   }
 // ]
 
-function updateBtn () {
-  if (flag === "playing" && audioPlayer.src)  {
-    playBtn.className = "bx bxs-right-arrow play-button";
-    audioPlayer.pause();
-    flag  = "not_playing";
-  } else {
-    if (audioPlayer.src) {
-    playBtn.className = "bx bx-pause play-button";
-    playBtn.style.fontSize = '24px';
-    audioPlayer.play();
-    flag = "playing";
-    }
-  }
-}
+
+audioPlayer.addEventListener('play', function() {
+  if (first === 0) { monitor.className = "bx bx-pause", first = 1;}
+  playBtn.className = "bx bx-pause play-button";
+  flag = 0;
+});
+
+audioPlayer.addEventListener('pause', function() {
+  if (first === 1) { monitor.className = "bx bxs-right-arrow", first = 0;}
+  playBtn.className = "bx bxs-right-arrow play-button";
+  flag = 1;
+});
+
+// function updateBtn () {
+//   if (flag === "playing" && audioPlayer.src)  {
+//     playBtn.className = "bx bxs-right-arrow play-button";
+//     audioPlayer.pause();
+//     flag  = "not_playing";
+//   } else {
+//     if (audioPlayer.src) {
+//     playBtn.className = "bx bx-pause play-button";
+//     playBtn.style.fontSize = '24px';
+//     audioPlayer.play();
+//     flag = "playing";
+//     }
+//   }
+// }
 
 playBtn.addEventListener('click', function () {
-  updateBtn();
+  if (flag === 0 && first === 1) {
+    audioPlayer.pause(); 
+  } else if (flag === 1) {audioPlayer.play();}
+});
+
+audioPlayer.addEventListener('ended', function () {
+  if (flag === "playing") {
+    playBtn.className = "bx bxs-right-arrow play-button";
+    flag = "not_playing";
+    if (first === 1) { monitor.className = "bx bxs-right-arrow";}
+  }
 });
 
 playSong.addEventListener('click', function (e) {
@@ -75,20 +99,22 @@ playSong.addEventListener('click', function (e) {
       const h3 = item.querySelector('.info .details p');
       const play = item.querySelector('.actions .icon i');
 
-      if (first === 0) {
+      if (first === 0 && monitor == play) {
       image.src = img.getAttribute('src');
       songTitle.innerText = h5.innerText;
       singer.innerText = h3.innerText;
       audioPlayer.src = '../audio/Without Me.mp3';
-      first = 1;
-      } else {first = 0;}
-
-      updateBtn();
-      if (flag === "playing") {
-      play.className = "bx bx-pause";
+      audioPlayer.play();
       } else {
-        play.className = "bx bxs-right-arrow";
+        audioPlayer.pause();
       }
+      //monitor = play;
+      // } else {first = 0;}
+      // updateBtn();
+      // if (audioPlayer.onplay) {
+      // play.className = "bx bx-pause";
+      // } else {
+      //   play.className = "bx bxs-right-arrow";
     }
   }
 });
