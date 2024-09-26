@@ -400,6 +400,10 @@ font-size: 13px;
   color: #5773ff;
 }
 
+.container main .playlist .music-list .items .item .actions .icon .bx-pause {
+  font-size: 15px;
+}
+
 .container main .playlist .music-list .items .item .actions i {
   color: #919191;
 }

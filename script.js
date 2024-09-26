@@ -32,20 +32,25 @@ const prev = document.querySelector('.container .right-section .music-player .pl
 const next = document.querySelector('.container .right-section .music-player .player-actions .buttons .next');
 const audioPlayer = document.createElement('audio');
 document.body.appendChild(audioPlayer);
-let flag = 1; //used to track if music is playing in background
-
+let flag = "not_playing"; //used to track if music is playing in background
+let first = 0;
+// const songsData = [
+//   {
+//     image:
+//   }
+// ]
 
 function updateBtn () {
-  if (flag === 1 && audioPlayer.src)  {
+  if (flag === "playing" && audioPlayer.src)  {
     playBtn.className = "bx bxs-right-arrow play-button";
     audioPlayer.pause();
-    flag  = 2;
+    flag  = "not_playing";
   } else {
     if (audioPlayer.src) {
     playBtn.className = "bx bx-pause play-button";
     playBtn.style.fontSize = '24px';
     audioPlayer.play();
-    flag = 1;
+    flag = "playing";
     }
   }
 }
@@ -68,14 +73,21 @@ playSong.addEventListener('click', function (e) {
       const img = item.querySelector('.info img');
       const h5 = item.querySelector('.info .details h5');
       const h3 = item.querySelector('.info .details p');
+      const play = item.querySelector('.actions .icon i');
 
-      if (img && h5 && h3) {
-        flag = 2;
-        image.src = img.getAttribute('src');
-        songTitle.innerText = h5.innerText;
-        singer.innerText = h3.innerText;
-        audioPlayer.src = '../audio/Without Me.mp3';
-        updateBtn();
+      if (first === 0) {
+      image.src = img.getAttribute('src');
+      songTitle.innerText = h5.innerText;
+      singer.innerText = h3.innerText;
+      audioPlayer.src = '../audio/Without Me.mp3';
+      first = 1;
+      } else {first = 0;}
+
+      updateBtn();
+      if (flag === "playing") {
+      play.className = "bx bx-pause";
+      } else {
+        play.className = "bx bxs-right-arrow";
       }
     }
   }
