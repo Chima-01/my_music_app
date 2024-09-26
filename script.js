@@ -34,12 +34,43 @@ const audioPlayer = document.createElement('audio');
 document.body.appendChild(audioPlayer);
 let flag = 0; //used to track if music is playing in background
 let first = 0;
+let index = 0;
+// let compare = "";
 let monitor = null; //monitors query selector play in playBtn
-// const songsData = [
-//   {
-//     image:
-//   }
-// ]
+
+const songsData = [  
+  { 
+    image: "./images/eminem.webp",
+    singer: "Eminem",
+    title:  "Without Me",
+    audio: "./audio/Without Me.mp3"
+  },
+  { 
+    image: "./images/adele.webp",
+    singer: "Adele",
+    title:  "When We Were Young",
+    audio: "./audio/When_We_Were_Young.mp3"
+  },
+  { 
+    image: "./images/NF.webp",
+    singer: "NF",
+    title:  "let you down",
+    audio: "./audio/Let_You_Down.mp3"
+  },
+  { 
+    image: "./images/Burna Boy ♡.jpg",
+    singer: "Burna boy",
+    title:  "Tested aproved & Trusted",
+    audio: "./audio/Tested-Approved-and-Trusted.mp3"
+  },
+  { 
+    image: "./images/Fave.jpg",
+    singer: "Fave",
+    title:  "Belong to you",
+    audio: "./audio/FAVE-Belong-To-You.mp3"
+  },
+
+]
 
 
 audioPlayer.addEventListener('play', function() {
@@ -54,20 +85,6 @@ audioPlayer.addEventListener('pause', function() {
   flag = 1;
 });
 
-// function updateBtn () {
-//   if (flag === "playing" && audioPlayer.src)  {
-//     playBtn.className = "bx bxs-right-arrow play-button";
-//     audioPlayer.pause();
-//     flag  = "not_playing";
-//   } else {
-//     if (audioPlayer.src) {
-//     playBtn.className = "bx bx-pause play-button";
-//     playBtn.style.fontSize = '24px';
-//     audioPlayer.play();
-//     flag = "playing";
-//     }
-//   }
-// }
 
 playBtn.addEventListener('click', function () {
   if (flag === 0 && first === 1) {
@@ -76,16 +93,12 @@ playBtn.addEventListener('click', function () {
 });
 
 audioPlayer.addEventListener('ended', function () {
-  if (flag === "playing") {
-    playBtn.className = "bx bxs-right-arrow play-button";
-    flag = "not_playing";
-    if (first === 1) { monitor.className = "bx bxs-right-arrow";}
-  }
+  playBtn.className = "bx bxs-right-arrow play-button";
+  monitor.className = "bx bxs-right-arrow";
 });
 
 playSong.addEventListener('click', function (e) {
   const clickedElement = e.target;
-
   // Check if the clicked element or its parent is the .info div or the .icon class
   const isInfoClicked = clickedElement.classList.contains('info') || clickedElement.closest('.info');
   const isIconClicked = clickedElement.classList.contains('icon') || clickedElement.closest('.icon');
@@ -95,27 +108,37 @@ playSong.addEventListener('click', function (e) {
     
     if (item) {
       const img = item.querySelector('.info img');
-      const h5 = item.querySelector('.info .details h5');
-      const h3 = item.querySelector('.info .details p');
+      const artiste = item.querySelector('.info .details h5');
+      const title = item.querySelector('.info .details p');
       const play = item.querySelector('.actions .icon i');
 
-      if (first === 0 && monitor == play) {
-      image.src = img.getAttribute('src');
-      songTitle.innerText = h5.innerText;
-      singer.innerText = h3.innerText;
-      audioPlayer.src = '../audio/Without Me.mp3';
+      // if (h5.innerText != compare && count !== 0) {
+      //   monitor.className = "bx bx-pause";
+      //   count = 0;
+      // } else {
+      //   compare = h5.innerText;
+      //   count = 1;
+      // }
+
+      monitor = play;
+      if (first === 0) {
+      // image.src = img.getAttribute('src');
+      songTitle.innerText = title.innerText;
+
+      for (let i = 0; i < songsData.length; i++) {
+        if (songsData[i].title === title.innerText) {
+        image.src = songsData[i].image;
+        singer.innerText = songsData[i].singer;
+        audioPlayer.src = songsData[i].audio;
+        index = i;
+        break;
+        }
+      }
       audioPlayer.play();
       } else {
         audioPlayer.pause();
       }
-      //monitor = play;
-      // } else {first = 0;}
-      // updateBtn();
-      // if (audioPlayer.onplay) {
-      // play.className = "bx bx-pause";
-      // } else {
-      //   play.className = "bx bxs-right-arrow";
-    }
+  }
   }
 });
 
@@ -149,3 +172,28 @@ function formatTime(time) {
   const seconds = Math.floor(time % 60);
   return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 }
+
+
+prev.addEventListener('click', function () {
+  let data = 0;
+  if (index === 0) {data = (songsData.length - 1)}
+  else { data = (index - 1) }
+  index = data;
+  image.src = songsData[data].image;
+  singer.innerText = songsData[data].singer;
+  audioPlayer.src = songsData[data].audio;
+  songTitle.innerText = songsData[data].title;
+  audioPlayer.play();
+});
+
+next.addEventListener('click', function () {
+let data = 0;
+if (index === (songsData.length - 1)) { data  = 0}
+else {data = index + 1;}
+index = data;
+image.src = songsData[data].image;
+singer.innerText = songsData[data].singer;
+audioPlayer.src = songsData[data].audio;
+songTitle.innerText = songsData[data].title;
+audioPlayer.play();
+});
